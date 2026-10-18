@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Groq Chatbot LangChain</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
+        .chat-container { max-width: 600px; margin: auto; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 20px; }
+        .chat-box { height: 400px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; border-radius: 4px; }
+        .message { margin-bottom: 10px; }
+        .user { font-weight: bold; color: #007bff; }
+        .bot { font-weight: bold; color: #28a745; }
+        .input-group { display: flex; }
+        input[type="text"] { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        button { padding: 10px 15px; background: #007bff; color: white; border: none; border-radius: 4px; margin-left: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <h2>AI Chatbot (Groq + LangChain)</h2>
+    <div class="chat-box" id="chatBox"></div>
+    <div class="input-group">
+        <input type="text" id="userInput" placeholder="Ketik pesan Anda di sini..." onkeypress="handleKeyPress(event)">
+        <button onclick="sendMessage()">Kirim</button>
+    </div>
+</div>
+
+<script>
+    async function sendMessage() {
+        const inputField = document.getElementById("userInput");
+        const chatBox = document.getElementById("chatBox");
+        const message = inputField.value.trim();
+
+        if (!message) return;
+
+        // Tampilkan pesan user
+        chatBox.innerHTML += `<div class="message"><span class="user">Anda:</span> ${message}</div>`;
+        inputField.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        try {
+            const response = await fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: message })
+            });
+
+            const data = await response.json();
+            if (data.response) {
+                chatBox.innerHTML += `<div class="message"><span class="bot">Bot:</span> ${data.response}</div>`;
+            } else {
+                chatBox.innerHTML += `<div class="message" style="color:red;"><strong>Error:</strong> ${data.error}</div>`;
+            }
+        } catch (error) {
+            chatBox.innerHTML += `<div class="message" style="color:red;"><strong>Error:</strong> Gagal terhubung ke server.</div>`;
+        }
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === "Enter") {
+            sendMessage();
+        }
+    }
+</script>
+
+</body>
+</html>
