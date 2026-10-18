@@ -28,7 +28,7 @@ def chat():
         # Model bisa disesuaikan, misalnya: llama-3.1-70b-versatile atau llama3-8b-8192
         llm = ChatGroq(
             groq_api_key=GROQ_API_KEY,
-            model_name="llama3-8b-8192",
+            model_name="openai/gpt-oss-20b",
             temperature=0.7
         )
 
