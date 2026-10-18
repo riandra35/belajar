@@ -28,6 +28,9 @@
 </div>
 
 <script>
+    // Buat session ID unik sederhana setiap kali halaman dimuat
+    const sessionId = "session_" + Math.random().toString(36).substring(2, 15);
+
     async function sendMessage() {
         const inputField = document.getElementById("userInput");
         const chatBox = document.getElementById("chatBox");
@@ -44,7 +47,8 @@
             const response = await fetch("/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: message })
+                // Kirim message beserta sessionId
+                body: JSON.stringify({ message: message, session_id: sessionId })
             });
 
             const data = await response.json();
